@@ -1,0 +1,71 @@
+
+
+<div class="lista-container">
+    <table mat-table [dataSource]="alumnos" class="mat-elevation-z8">
+            <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef> Nombre: </th>
+            <td mat-cell *matCellDef="let alumno"> {{alumno.nombre + ' ' +  alumno.apellido}} </td>
+            </ng-container>                  
+            
+            <ng-container matColumnDef="edad">
+            <th mat-header-cell *matHeaderCellDef> Edad: </th>
+            <td mat-cell *matCellDef="let alumno"> {{alumno.edad}} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="curso">
+            <th mat-header-cell *matHeaderCellDef> Curso: </th>
+            <td mat-cell *matCellDef="let alumno"> {{alumno.curso + alumno.division }} </td>
+            </ng-container> 
+
+            <ng-container matColumnDef="lengua">
+            <th mat-header-cell *matHeaderCellDef> Lengua: </th>
+            <td mat-cell *matCellDef="let alumno"> {{alumno.calificaciones[0].calificacion}} </td>
+            </ng-container> 
+
+            <ng-container matColumnDef="matematica">
+            <th mat-header-cell *matHeaderCellDef> Matematica: </th>
+            <td mat-cell *matCellDef="let alumno"> {{alumno.calificaciones[1].calificacion}} </td>
+            </ng-container> 
+
+            <ng-container matColumnDef="geografia">
+            <th mat-header-cell *matHeaderCellDef> Geografia: </th>
+            <td mat-cell *matCellDef="let alumno"> {{alumno.calificaciones[2].calificacion}} </td>
+            </ng-container> 
+
+            <ng-container matColumnDef="musica">
+            <th mat-header-cell *matHeaderCellDef> Musica: </th>
+            <td mat-cell *matCellDef="let alumno"> {{alumno.calificaciones[3].calificacion}} </td>
+            </ng-container> 
+
+            <ng-container matColumnDef="actualizar">
+            <th mat-header-cell *matHeaderCellDef> Actualizar: </th>
+            <td mat-cell *matCellDef="let alumno">  
+                <button mat-icon-button color="primary" (click)="actualizarAlumno(alumno.id)">
+                    <mat-icon>save</mat-icon>
+                </button>
+            </td>
+            </ng-container> 
+
+            <ng-container matColumnDef="eliminar">
+            <th mat-header-cell *matHeaderCellDef> Eliminar: </th>
+            <td mat-cell *matCellDef="let alumno">
+                <button mat-icon-button color="warn" (click)="eliminarAlumno(alumno.id)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </ng-container> 
+        
+            <tr mat-header-row *matHeaderRowDef="columnsName"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnsName;"></tr>
+      </table>
+
+      <div class="submit-class">
+        <div></div>
+        <div>
+            <button mat-raised-button type="button" color="primary" (click)="crearAlumno()">Agregar Nuevo Estudiante</button>
+        </div>
+    </div>
+</div>
+
+<!-- 
+    <app-abm-alumnos [alumnoId]="0"></app-abm-alumnos>
+-->

@@ -1,0 +1,15 @@
+.lista-container {
+    width: 95%;
+    padding-top: 25px; 
+}
+
+table {
+    width: 90%;
+    margin: auto;
+}
+
+.submit-class {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 6fr 1fr;
+}
