@@ -1,0 +1,52 @@
+<div class="form-main-container">
+    <form [formGroup]="mainForm" (ngSubmit)="submitProcess()">
+        <div class="grid-row-2c">
+            <div>
+                <mat-form-field class="input-form">
+                    <mat-label>Nombre curso:</mat-label>
+                    <input matInput formControlName="descripcion" placeholder="Angular">
+                </mat-form-field>
+            </div>
+            
+            <div class="aling-form">
+                <mat-form-field class="input-form">
+                    <mat-label>Duracion:</mat-label>
+                    <input matInput formControlName="duracionHs" placeholder="120">
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="grid-row-3c">
+            <div>
+                <mat-form-field class="input-form">
+                    <mat-label>Modalidad:</mat-label>
+                    <input matInput formControlName="modalidad" placeholder="21">
+                </mat-form-field>
+            </div>
+            
+            <div>
+                <mat-form-field class="input-form">
+                    <mat-label>Titular:</mat-label>
+                    <input matInput formControlName="titular" placeholder="B">
+                </mat-form-field>
+            </div>
+
+            <div>
+                <mat-form-field class="input-form">
+                    <mat-label>Fecha inicio:</mat-label>
+                    <input matInput formControlName="fechaInicio" placeholder="3">
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="submit-class">
+            <div></div>
+            <div>
+                <button mat-raised-button type="submit" color="primary">{{ txtBtnValue }}</button>
+            </div>
+            <div>
+                <button mat-raised-button type="button" color="warn" [routerLink]="['/lista-cursos']">Volver</button>
+            </div>
+        </div>
+    </form>
+</div>

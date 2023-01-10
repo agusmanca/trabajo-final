@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlumnoDto } from '../lista-alumnos/model/alumnoDto';
-import { CalificacionesDto } from '../lista-alumnos/model/calidicaciones';
-import { AlumnoServiceService } from '../lista-alumnos/service/alumno-service.service';
+import { AlumnoDto } from '../model/alumnoDto';
+import { CalificacionesDto } from '../model/calidicaciones';
+import { AlumnoServiceService } from '../service/alumno-service.service';
 
 @Component({
   selector: 'app-abm-alumnos',
@@ -36,10 +36,7 @@ export class AbmAlumnosComponent implements OnInit {
           apellido: ['', [Validators.required, Validators.minLength(5)]],
           edad: ['', []],
           curso: ['', []],
-          division: [''],
-          calificaciones: fb.array([
-            0,0,0,0
-          ])
+          division: ['']
       }); 
   }
 
@@ -54,15 +51,6 @@ export class AbmAlumnosComponent implements OnInit {
           this.mainForm.get('curso')?.setValue(this.alumno.curso);
           this.mainForm.get('division')?.setValue(this.alumno.division);
 
-          if(this.alumno.calificaciones.length > 0) {
-            let noteArray: number[] = [];  
-            this.alumno.calificaciones.forEach((value) => {
-                noteArray = [...noteArray, value.calificacion]
-            });
-
-            this.calificacionesArray.setValue(noteArray);
-          }
-
           this.txtBtnValue = 'Actualizar';
       }
   }
@@ -74,23 +62,15 @@ export class AbmAlumnosComponent implements OnInit {
  
       if(this.alumno) {
           this.alumnoService.updateAlumno(this.setAlumnoValue(this.alumno.id));
-          this.router.navigate(['']);
+          this.router.navigate(['/lista-alumnos']);
       } else {
           this.alumnoService.saveNewAlumno(this.setAlumnoValue(0));
-          this.router.navigate(['']);
+          this.router.navigate(['/lista-alumnos']);
       }
   }
 
   setAlumnoValue(id: number): AlumnoDto {
     let caliArray: Array<CalificacionesDto> = new Array();
-    
-    this.calificacionesArray.value.forEach((val:number, i: number) => {
-      caliArray.push({
-          id: i,
-          asignatura: this.asignaturas[i],
-          calificacion: val,
-      })
-    })
         
     return {
             id: id,

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
 import { AlumnoDto } from '../model/alumnoDto';
 import { CalificacionesDto } from '../model/calidicaciones';
 
@@ -8,10 +9,10 @@ import { CalificacionesDto } from '../model/calidicaciones';
 export class AlumnoServiceService {
 
   private alumnos: Array<AlumnoDto> = new Array();
-  private asignatura: Array<string> = ['Lengua','Matematica','Geografia','Musica'];
+  private asignatura: Array<string> = ['Angular','React','Java','Go'];
 
   constructor() { 
-    this. setAlumnosModelMock();
+    this.setAlumnosModelMock();
   }
 
   private setAlumnosModelMock(): void {
@@ -25,22 +26,22 @@ export class AlumnoServiceService {
       calificaciones: [
           {
               id:1,
-              asignatura:'Lengua',
+              asignatura:'Angular',
               calificacion: 8
           },
           {
               id:2,
-              asignatura:'Matematica',
+              asignatura:'React',
               calificacion: 6
           },
           {
             id:3,
-            asignatura:'Geografia',
+            asignatura:'Java',
             calificacion: 8
           },
           {
             id:4,
-            asignatura:'Musica',
+            asignatura:'Go',
             calificacion: 9
           }
       ]
@@ -56,22 +57,22 @@ export class AlumnoServiceService {
       calificaciones: [
         {
             id:1,
-            asignatura:'Lengua',
+            asignatura:'Angular',
             calificacion: 5
         },
         {
             id:2,
-            asignatura:'Matematica',
+            asignatura:'React',
             calificacion: 9
         },
         {
           id:3,
-          asignatura:'Geografia',
+          asignatura:'Java',
           calificacion: 7
         },
         {
           id:4,
-          asignatura:'Musica',
+          asignatura:'Go',
           calificacion: 7
         }
       ]
@@ -87,22 +88,22 @@ export class AlumnoServiceService {
       calificaciones: [
         {
             id:1,
-            asignatura:'Lengua',
+            asignatura:'Angular',
             calificacion: 5
         },
         {
             id:2,
-            asignatura:'Matematica',
+            asignatura:'React',
             calificacion: 9
         },
         {
           id:3,
-          asignatura:'Geografia',
+          asignatura:'Java',
           calificacion: 7
         },
         {
           id:4,
-          asignatura:'Musica',
+          asignatura:'Go',
           calificacion: 7
         }
       ]
@@ -134,7 +135,7 @@ export class AlumnoServiceService {
       let aluDel = this.alumnos.filter(alu => alu.id == id)[0];
       
       if(aluDel) {        
-        this.alumnos = this.alumnos.filter(alu => alu.id !== id);       
+        this.alumnos = this.alumnos.filter(alu => alu.id !== id);   
         flag = true;
       }
       return flag;
