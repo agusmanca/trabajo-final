@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthGuard } from 'src/app/commons/auth.guard';
 import { CursoDto } from '../model/CursoDto';
 import { CursoService } from '../service/curso.service';
 
@@ -23,6 +24,7 @@ export class AbmCursosComponent implements OnInit {
   constructor(public fb: FormBuilder, 
               public activeRouter: ActivatedRoute,
               public router: Router,
+              public authService: AuthGuard,
               public cursoService: CursoService) { 
 
       this.activeRouter.params.subscribe((param) => {
@@ -59,10 +61,10 @@ export class AbmCursosComponent implements OnInit {
  
       if(this.curso) {
           this.cursoService.updateCurso(this.setCursoValue(this.curso.id));
-          this.router.navigate(['/lista-cursos']);
+          this.router.navigate(['/cursos/lista-cursos']);
       } else {
           this.cursoService.saveNewCurso(this.setCursoValue(0));
-          this.router.navigate(['/lista-cursos']);
+          this.router.navigate(['/cursos/lista-cursos']);
       }
   }
 

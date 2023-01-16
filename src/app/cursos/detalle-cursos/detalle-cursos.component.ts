@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { map, Observable, of } from 'rxjs';
 import { AlumnoDto } from 'src/app/alumnos/model/alumnoDto';
 import { AlumnoServiceService } from 'src/app/alumnos/service/alumno-service.service';
+import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { InscripcionDto } from 'src/app/inscripciones/model/InscripcionDto';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
@@ -28,6 +29,7 @@ export class DetalleCursosComponent implements OnInit {
   constructor(public activeRouter: ActivatedRoute, 
               public incripcionService: InscripcionService,
               public cursosService: CursoService,
+              public authService: AuthGuard,
               public alumnoService: AlumnoServiceService) {
     
     this.activeRouter.params.subscribe((param) => {
@@ -92,7 +94,7 @@ export class DetalleCursosComponent implements OnInit {
   }
 
   isAuth(): boolean {
-    if(environment.userAccess == UserRoleEnum.ADMIN){
+    if(this.authService.getRole() == UserRoleEnum.ADMIN){
       return true;
     } else {
       return false;

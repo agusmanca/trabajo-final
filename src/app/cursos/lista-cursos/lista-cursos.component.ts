@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
 import { environment } from 'src/environments/environment';
@@ -18,6 +19,7 @@ export class ListaCursosComponent implements OnInit {
 
   constructor(public cursosService: CursoService, 
               public inscripcionService: InscripcionService,
+              public authService: AuthGuard,
               public router: Router) { 
     this.cursos = this.cursosService.getCursosList();
   }
@@ -32,15 +34,15 @@ export class ListaCursosComponent implements OnInit {
   }
 
   actualizarCurso(id: number) {
-      this.router.navigate(['abm-curso', id]);
+      this.router.navigate(['cursos', 'abm-curso', id]);
   }
 
   crearCurso() {
-      this.router.navigate(['abm-curso', 0]);
+      this.router.navigate(['cursos', 'abm-curso', 0]);
   }
 
   isAuth(): boolean {
-    if(environment.userAccess == UserRoleEnum.ADMIN){
+    if(this.authService.getRole() == UserRoleEnum.ADMIN){
       return true;
     } else {
       return false;

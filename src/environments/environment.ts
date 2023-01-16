@@ -2,11 +2,8 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { UserRoleEnum } from "src/app/commons/userRoleEnum";
-
 export const environment = {
   production: false,
-  userAccess: UserRoleEnum.ADMIN  // ADMIN - USER
 };
 
 /*

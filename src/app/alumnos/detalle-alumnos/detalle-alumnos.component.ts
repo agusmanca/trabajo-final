@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { CursoDto } from 'src/app/cursos/model/CursoDto';
 import { CursoService } from 'src/app/cursos/service/curso.service';
@@ -24,6 +25,7 @@ export class DetalleAlumnosComponent implements OnInit {
   constructor(public activeRouter: ActivatedRoute, 
               public incripcionService: InscripcionService,
               public cursosService: CursoService,
+              public authService: AuthGuard,
               public alumnoService: AlumnoServiceService) {
     
     this.activeRouter.params.subscribe((param) => {
@@ -50,7 +52,7 @@ export class DetalleAlumnosComponent implements OnInit {
   }
 
   inscribir(idCurso: number, idAlumno: number): void {
-      if(environment.userAccess == UserRoleEnum.USER){
+      if(this.authService.getRole() != UserRoleEnum.ADMIN){
         return
       }
 
@@ -59,7 +61,7 @@ export class DetalleAlumnosComponent implements OnInit {
   }
 
   desinscribir(idCurso: number, idAlumno: number): void {
-      if(environment.userAccess == UserRoleEnum.USER){
+      if(this.authService.getRole() != UserRoleEnum.ADMIN){
         return
       }
       

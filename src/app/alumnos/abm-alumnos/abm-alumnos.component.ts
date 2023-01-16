@@ -62,10 +62,10 @@ export class AbmAlumnosComponent implements OnInit {
  
       if(this.alumno) {
           this.alumnoService.updateAlumno(this.setAlumnoValue(this.alumno.id));
-          this.router.navigate(['/lista-alumnos']);
+          this.router.navigate(['/alumnos/lista-alumnos']);
       } else {
           this.alumnoService.saveNewAlumno(this.setAlumnoValue(0));
-          this.router.navigate(['/lista-alumnos']);
+          this.router.navigate(['/alumnos/lista-alumnos']);
       }
   }
 

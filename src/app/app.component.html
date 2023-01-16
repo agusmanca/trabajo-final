@@ -1,13 +1,20 @@
 <div class="main-grid">
-  <div class="toolbar">
-    <app-toobar></app-toobar>
+
+  <div *ngIf="!authServ.isAuth()">
+      <app-login></app-login>
   </div>
-  <div class="body-grid">
-    <div class="sidebar">
-        <app-sidebar></app-sidebar>
-    </div>
-    <div class="index-container">
-        <app-main-content></app-main-content>
-    </div>
+
+  <div *ngIf="authServ.isAuth()">
+      <div class="toolbar">
+        <app-toobar></app-toobar>
+      </div>
+      <div class="body-grid">
+        <div class="sidebar" >
+            <app-sidebar></app-sidebar>
+        </div>
+        <div class="index-container">
+            <router-outlet></router-outlet>
+        </div>
+      </div>
   </div>
 </div>

@@ -1,0 +1,29 @@
+<div class="login-content">
+    <mat-card class="login-card">
+        <mat-card-header>
+          <mat-card-title-group>
+            <mat-card-title>Registro de usuario</mat-card-title>
+          </mat-card-title-group>
+        </mat-card-header>
+       
+        <mat-card-content>
+            <form class="login-form" [formGroup]="mainForm" (ngSubmit)="login()">
+                <mat-form-field class="user-style">
+                    <mat-label>Ingrese Usuario</mat-label>
+                    <input matInput formControlName="user" placeholder="User">
+                </mat-form-field>
+                
+                <br>
+                
+                <mat-form-field class="psw-style">
+                    <mat-label>Ingrese clave:</mat-label>
+                    <input matInput type="password" formControlName="pass" placeholder="Password">
+                </mat-form-field>
+        
+                <br>
+        
+                <button mat-raised-button type="submit" color="primary">Ingresar</button>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -19,7 +19,7 @@
     <ng-container matColumnDef="detalle">
         <th mat-header-cell *matHeaderCellDef> Detalle: </th>
         <td mat-cell *matCellDef="let alumno">
-            <button mat-icon-button color="warn" [routerLink]="['/detalle-alumno', alumno.id]">
+            <button mat-icon-button color="warn" [routerLink]="['/alumnos/detalle-alumno', alumno.id]">
                 <mat-icon>launch</mat-icon> 
             </button>
         </ng-container> 
