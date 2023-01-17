@@ -1,0 +1,40 @@
+<div class="lista-container">
+    
+    <div *ngIf="usuario">
+        <div class="title-style">Datos del Alumno:</div> <br>
+
+        <div class="datos-alumno">
+            <div class="colum-style">
+                <div class="subtitle-style"> Nombre: &nbsp;</div>
+                <span> {{ usuario.nombre }} </span>
+            </div>
+        
+            <div class="colum-style">
+                <div class="subtitle-style"> Apellido: &nbsp;</div>
+                <span> {{ usuario.apellido }} </span>
+            </div>
+        
+            <div class="colum-style">
+                <div class="subtitle-style"> Username: &nbsp;</div>
+                <span> {{ usuario.username }} </span>
+            </div>
+              
+            <div class="colum-style">
+                <div class="subtitle-style"> Clave: &nbsp;</div>
+                <span> ******** </span>
+            </div>
+
+            <div class="colum-style">
+                <div class="subtitle-style"> Rol: &nbsp;</div>
+                <span> {{ usuario.role | role }} </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="submit-class">
+        <div></div>
+        <div>
+            <button mat-raised-button type="button" color="warn" [routerLink]="['/usuarios/lista-usuarios']">Volver</button>
+        </div>
+    </div>
+</div>

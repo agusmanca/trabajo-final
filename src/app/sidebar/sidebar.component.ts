@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../commons/auth.guard';
+import { UserRoleEnum } from '../commons/userRoleEnum';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,7 +14,15 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  logout() {
+  isAuth(): boolean {
+      if(this.auth.getRole() == UserRoleEnum.ADMIN.toString()) {
+          return true;
+      } else {
+        return false;
+      }
+  }
+
+  logout(): void {
     this.auth.logout()
   }
 }

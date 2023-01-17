@@ -1,0 +1,41 @@
+.lista-container {
+    width: 95%;
+    padding: 25px; 
+}
+
+table {
+    width: 90%;
+    margin: auto;
+}
+
+.title-style {
+    font-weight: bold;
+    font-size: 26px;
+}
+
+.datos-alumno {
+    padding-left: 50px;
+}
+
+.submit-class {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 6fr 1fr;
+}
+
+.colum-style {
+    display: flex;
+    font-size: 18px;
+    padding: 10px 0;
+}
+
+.subtitle-style {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.submit-class {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 6fr 1fr;
+}

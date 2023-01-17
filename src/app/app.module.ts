@@ -13,6 +13,7 @@ import { AlumnosModule } from './alumnos/alumnos.module';
 import { CursosModule } from './cursos/cursos.module';
 import { LoginComponent } from './login/login.component';
 import { CommonModule } from '@angular/common';
+import { UsuariosModule } from './usuarios/usuarios.module';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { CommonModule } from '@angular/common';
     HttpClientModule,
     SharedModule,
     AlumnosModule,
-    CursosModule
+    CursosModule,
+    UsuariosModule
   ],
   providers: [],
   bootstrap: [AppComponent]

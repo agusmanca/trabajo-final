@@ -16,10 +16,7 @@
             <a routerLink="" class="list-group-item list-group-item-action py-2 ripple">
                 <i class="bi bi-info-circle"></i><span> Inscripciones</span>
             </a>
-            <a href="#" class="list-group-item list-group-item-action py-2 ripple">
-                <i class="bi bi-calendar3"></i><span> Calendario</span>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+            <a routerLink="/usuarios/lista-usuarios" class="list-group-item list-group-item-action py-2 ripple" *ngIf="isAuth()">
                 <i class="bi bi-person-circle"></i><span> Usuario</span>
             </a>
             <a href="#" class="list-group-item list-group-item-action py-2 ripple">

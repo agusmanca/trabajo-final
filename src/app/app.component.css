@@ -1,6 +1,11 @@
 .main-grid {
     display: grid;
     grid-template-rows: auto auto;
+    height: 90vh;
+}
+
+.loging-container-style {
+    padding-top: 20vw;
 }
 
 .body-grid {

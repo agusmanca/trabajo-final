@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthGuard } from '../commons/auth.guard';
+import { UsuariosService } from '../usuarios/servicios/usuarios.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,8 @@ export class LoginComponent implements OnInit {
   
   public mainForm!: FormGroup; 
 
-  constructor(public fb: FormBuilder, private auth: AuthGuard) {
+  constructor(public fb: FormBuilder, 
+              private auth: AuthGuard) {
 
     this.mainForm = fb.group({
         user: ['', [Validators.required]],
@@ -29,7 +31,7 @@ export class LoginComponent implements OnInit {
       if(pass == user) {
         this.auth.login(user);
       } else {
-
+        console.log('Registro fallido');
       }
   }
 }
