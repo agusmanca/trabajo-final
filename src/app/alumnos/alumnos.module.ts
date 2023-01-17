@@ -19,7 +19,7 @@ const routes: Routes = [
       { path: 'detalle-alumno/:id', component: DetalleAlumnosComponent }
     ]
   },
-  { path: '', pathMatch:'full', redirectTo: '/alumnos/lista-alumnos' }
+  { path: '', pathMatch:'full', redirectTo: '' }
 ]
 
 @NgModule({

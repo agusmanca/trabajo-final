@@ -1,20 +1,32 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { AlumnoDto } from '../model/alumnoDto';
-import { CalificacionesDto } from '../model/calidicaciones';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlumnoServiceService {
 
+  private alumnos$!: Observable<AlumnoDto[]>;
+  private alumnosSubject: BehaviorSubject<AlumnoDto[]> = new BehaviorSubject<AlumnoDto[]>([]) ;
   private alumnos: Array<AlumnoDto> = new Array();
   private asignatura: Array<string> = ['Angular','React','Java','Go'];
 
-  constructor() { 
-    this.setAlumnosModelMock();
+  private url:string = environment.mockApiUrl + 'alumnos';
+  private headers: HttpHeaders = new HttpHeaders({'Content-Type' : 'application/json'});
+
+  constructor(private httpService: HttpClient) { 
+    this.alumnos$ = this.alumnosSubject.asObservable();
+
+    this.httpService.get<Array<AlumnoDto>>(this.url).subscribe((alumnos: Array<AlumnoDto>) => {
+        this.alumnosSubject.next(alumnos);
+        this.alumnos = this.alumnosSubject.getValue();
+    });
   }
 
+  /*
   private setAlumnosModelMock(): void {
     let alumno1: AlumnoDto = {
       id: 1,
@@ -110,10 +122,10 @@ export class AlumnoServiceService {
     };
 
     this.alumnos = [alumno1, alumno2, alumno3];
-  }
+  } */
 
-  public getAlumnosList(): Array<AlumnoDto> {
-    return this.alumnos;
+  public getAlumnosList(): Observable<Array<AlumnoDto>> {
+    return this.alumnos$;
   }
 
   public getAsignaturasList(): Array<string> {
@@ -126,30 +138,60 @@ export class AlumnoServiceService {
   }
 
   public saveNewAlumno(alumnoNuevo: AlumnoDto){
-      alumnoNuevo.id = this.alumnos.length + 1;
-      this.alumnos = [...this.alumnos, alumnoNuevo];
+      
+      this.httpService.post<AlumnoDto>(this.url, alumnoNuevo, { headers: this.headers }).subscribe({
+          next: data => {
+              this.httpService.get<Array<AlumnoDto>>(this.url).subscribe((alumnos: Array<AlumnoDto>) => {
+                  this.alumnosSubject.next(alumnos);
+                  this.alumnos = this.alumnosSubject.getValue();
+              });
+          }, 
+          error: err => {
+            console.log(err);
+          }
+      });
+  }
+
+  public updateAlumno(alumnoActualizado: AlumnoDto): boolean {
+      let flag: boolean = false;
+
+      let idx = this.alumnos.findIndex(alu => alu.id == alumnoActualizado.id);
+      if(idx >= 0) {
+          this.httpService.put<AlumnoDto>(`${this.url}/${alumnoActualizado.id}`, alumnoActualizado).subscribe({
+            next: data => {
+                this.httpService.get<Array<AlumnoDto>>(this.url).subscribe((alumnos: Array<AlumnoDto>) => {
+                    this.alumnosSubject.next(alumnos);
+                    this.alumnos = this.alumnosSubject.getValue();
+                    flag = true;
+                });
+            },
+            error: err => {
+              console.log(err);
+            }
+          });
+      }
+        
+      return flag;
   }
 
   public deleteAlumno(id: number): boolean {
       let flag: boolean = false; 
       let aluDel = this.alumnos.filter(alu => alu.id == id)[0];
       
-      if(aluDel) {        
-        this.alumnos = this.alumnos.filter(alu => alu.id !== id);   
-        flag = true;
+      if(aluDel) {       
+          this.httpService.delete<AlumnoDto>(`${this.url}/${id}`, { headers: this.headers }).subscribe({
+              next: data => {
+                  this.httpService.get<Array<AlumnoDto>>(this.url).subscribe((alumnos: Array<AlumnoDto>) => {
+                    this.alumnosSubject.next(alumnos);
+                    this.alumnos = this.alumnosSubject.getValue();
+                    flag = true;
+                  });
+              },
+              error: err => {
+                  console.log(err);
+              }
+          });
       }
       return flag;
-  }
-
-  public updateAlumno(alumnoActualizado: AlumnoDto): boolean {
-    let flag: boolean = false;
-
-    let idx = this.alumnos.findIndex(alu => alu.id == alumnoActualizado.id);
-    if(idx >= 0) {
-      this.alumnos[idx] = alumnoActualizado;
-      flag = true;
-    }
-       
-    return flag;
   }
 }

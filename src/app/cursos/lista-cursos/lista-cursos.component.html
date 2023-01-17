@@ -1,4 +1,4 @@
-<div class="lista-container">
+<div class="lista-container" *ngIf="cursos.length > 0">
     <table mat-table [dataSource]="cursos" class="mat-elevation-z8">
         <ng-container matColumnDef="descripcion">
             <th mat-header-cell *matHeaderCellDef> Nombre Curso: </th>

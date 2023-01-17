@@ -36,7 +36,9 @@ export class DetalleAlumnosComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.alumno) {
-        this.cursosAlumno = this.cursosService.getCursosList();
+        this.cursosService.getCursosList().subscribe((cursosP: Array<CursoDto>) => {
+          this.cursosAlumno = cursosP;
+        });
         this.setInscripciones();
     }
   }
@@ -52,7 +54,7 @@ export class DetalleAlumnosComponent implements OnInit {
   }
 
   inscribir(idCurso: number, idAlumno: number): void {
-      if(this.authService.getRole() != UserRoleEnum.ADMIN){
+      if(this.authService.getRole() != UserRoleEnum.ADMIN.toString()){
         return
       }
 
@@ -61,7 +63,7 @@ export class DetalleAlumnosComponent implements OnInit {
   }
 
   desinscribir(idCurso: number, idAlumno: number): void {
-      if(this.authService.getRole() != UserRoleEnum.ADMIN){
+      if(this.authService.getRole() != UserRoleEnum.ADMIN.toString()){
         return
       }
       

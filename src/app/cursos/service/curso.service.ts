@@ -1,5 +1,8 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
+import { environment } from 'src/environments/environment';
 import { CursoDto } from '../model/CursoDto';
 
 @Injectable({
@@ -8,11 +11,22 @@ import { CursoDto } from '../model/CursoDto';
 export class CursoService {
 
   cursos: Array<CursoDto> = new Array();
+  cursos$!: Observable<CursoDto[]>;
+  cursosSubject: BehaviorSubject<CursoDto[]> = new BehaviorSubject<CursoDto[]>([]);
 
-  constructor() { 
-    this.cursos = this.setCursosMock();
+  private url:string = environment.mockApiUrl + 'cursos';
+  private headers: HttpHeaders = new HttpHeaders({'Content-Type' : 'application/json'});
+
+  constructor(public httpServ: HttpClient) { 
+    this.cursos$ = this.cursosSubject.asObservable();
+
+    this.httpServ.get<CursoDto[]>(this.url).subscribe((cursos: CursoDto[]) => {
+        this.cursosSubject.next(cursos);
+        this.cursos = this.cursosSubject.getValue();
+    });
   }
 
+  /*
   setCursosMock(): Array<CursoDto> {
       return [
         {
@@ -48,20 +62,29 @@ export class CursoService {
           titular:'David Go'
         }
       ]
-  }
+  } */
 
   getCursoById(cursoId: number): CursoDto | undefined {
     let val: Array<CursoDto> = this.cursos.filter(alu => alu.id == cursoId);
     return (val.length > 0) ? val[0] : undefined;
   }
 
-  getCursosList(): Array<CursoDto> {
-      return this.cursos;
+  getCursosList(): Observable<Array<CursoDto>> {
+      return this.cursos$;
   }
 
   saveNewCurso(newCurso: CursoDto): void {
-    newCurso.id = this.cursos.length + 1;
-    this.cursos = [...this.cursos, newCurso];
+      this.httpServ.post<CursoDto>(this.url, newCurso, { headers: this.headers }).subscribe({
+          next: data => {
+              this.httpServ.get<CursoDto[]>(this.url).subscribe((cursos: CursoDto[]) => {
+                  this.cursosSubject.next(cursos);
+                  this.cursos = this.cursosSubject.getValue();
+              });
+          }, 
+          error: err => {
+            console.log(err);
+          }
+      });
   }
 
   updateCurso(updateCurso: CursoDto): boolean {
@@ -69,8 +92,18 @@ export class CursoService {
       let idx = this.cursos.findIndex(cur => cur.id == updateCurso.id);
 
       if(idx >= 0) {
-        this.cursos[idx] = updateCurso;
-        flag = true;
+          this.httpServ.put<CursoDto>(`${this.url}/${updateCurso.id}`, updateCurso).subscribe({
+              next: data => {
+                this.httpServ.get<CursoDto[]>(this.url).subscribe((cursos: CursoDto[]) => {
+                    this.cursosSubject.next(cursos);
+                    this.cursos = this.cursosSubject.getValue();
+                    flag = true;
+                });
+              },
+              error: err => {
+                console.log(err);
+              }
+          });
       }
       return flag;
   }
@@ -79,9 +112,19 @@ export class CursoService {
       let flag: boolean = false; 
       let curDel = this.cursos.filter(cur => cur.id == id)[0];
       
-      if(curDel) {        
-        this.cursos = this.cursos.filter(cur => cur.id !== id);       
-        flag = true;
+      if(curDel) {
+          this.httpServ.delete<CursoDto>(`${this.url}/${id}`, { headers: this.headers }).subscribe({
+              next: data => {
+                this.httpServ.get<CursoDto[]>(this.url).subscribe((cursos: CursoDto[]) => {
+                    this.cursosSubject.next(cursos);
+                    this.cursos = this.cursosSubject.getValue();
+                    flag = true;
+                });
+              },
+              error: err => {
+                console.log(err);
+              }
+          });
       }
       return flag;
   }

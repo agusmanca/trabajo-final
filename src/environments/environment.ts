@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  mockApiUrl: 'https://63c5ba68f3a73b34785c9f88.mockapi.io/api/v1/amanca-api/'
 };
 
 /*

@@ -76,7 +76,7 @@
                     <mat-label>Seleccione un Alumno de la lista: </mat-label>
                     <select matNativeControl [(ngModel)]="alumnoSelected">
                         <option value="0" selected>Seleccione un Alumno</option>
-                        <option *ngFor="let ani of getAlumnosNoInscriptos()" [value]="ani.id">{{ani.nombre + ' ' + ani.apellido}}</option>
+                        <option *ngFor="let ani of getAlumnosNoInscriptos() | async" [value]="ani.id">{{ani.nombre + ' ' + ani.apellido}}</option>
                     </select>
                 </mat-form-field>
             </div>

@@ -7,7 +7,6 @@ import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { InscripcionDto } from 'src/app/inscripciones/model/InscripcionDto';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
-import { environment } from 'src/environments/environment';
 import { CursoDto } from '../model/CursoDto';
 import { CursoService } from '../service/curso.service';
 
@@ -76,12 +75,16 @@ export class DetalleCursosComponent implements OnInit {
   }
 
 
-  getAlumnosNoInscriptos(): Array<AlumnoDto> {
-       let alumnosNoInsc = this.alumnoService.getAlumnosList();
-       this.alumnos.forEach(ai => {
-            alumnosNoInsc = alumnosNoInsc.filter(a => a.id !== ai.id);
-       });
-       return alumnosNoInsc;
+  getAlumnosNoInscriptos(): Observable<Array<AlumnoDto>> {
+      return this.alumnoService.getAlumnosList().pipe(
+          map((alusLst: Array<AlumnoDto>) => {
+              let lista = alusLst;
+              this.alumnos.forEach(ai => {
+                lista = lista.filter(a => a.id !== ai.id);
+              });
+              return lista;
+          }
+      ));
   }
 
   inscribirAlumno() {
@@ -94,7 +97,7 @@ export class DetalleCursosComponent implements OnInit {
   }
 
   isAuth(): boolean {
-    if(this.authService.getRole() == UserRoleEnum.ADMIN){
+    if(this.authService.getRole() == UserRoleEnum.ADMIN.toString()){
       return true;
     } else {
       return false;

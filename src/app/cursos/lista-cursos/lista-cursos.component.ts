@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
@@ -14,14 +15,21 @@ import { CursoService } from '../service/curso.service';
 })
 export class ListaCursosComponent implements OnInit {
 
+  cursos$!: Observable<Array<CursoDto>>;
   cursos: Array<CursoDto> = new Array();
   columnsName: string[] = ['descripcion', 'duracionHs', 'fechaInicio', 'modalidad', 'titular', 'actualizar', 'eliminar', 'detalle'];
 
   constructor(public cursosService: CursoService, 
               public inscripcionService: InscripcionService,
               public authService: AuthGuard,
-              public router: Router) { 
-    this.cursos = this.cursosService.getCursosList();
+              public router: Router) {
+
+
+    this.cursos$ = this.cursosService.getCursosList();
+
+    this.cursosService.getCursosList().subscribe((cursosP: Array<CursoDto>) => {
+        this.cursos = cursosP;
+    });
   }
 
   ngOnInit(): void {
@@ -30,7 +38,9 @@ export class ListaCursosComponent implements OnInit {
   eliminarCurso(id: number) {
     this.cursosService.deleteCurso(id);
     this.inscripcionService.eliminarInscirpcionPorCursoEliminado(id);
-    this.cursos = this.cursosService.getCursosList();   
+    this.cursosService.getCursosList().subscribe((cursosP: Array<CursoDto>) => {
+      this.cursos = cursosP;
+    }); 
   }
 
   actualizarCurso(id: number) {
@@ -42,7 +52,7 @@ export class ListaCursosComponent implements OnInit {
   }
 
   isAuth(): boolean {
-    if(this.authService.getRole() == UserRoleEnum.ADMIN){
+    if(this.authService.getRole() == UserRoleEnum.ADMIN.toString()){
       return true;
     } else {
       return false;

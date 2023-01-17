@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
-import { InscripcionDto } from 'src/app/inscripciones/model/InscripcionDto';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
-import { environment } from 'src/environments/environment';
 import { AlumnoDto } from '../model/alumnoDto';
 import { AlumnoServiceService } from '../service/alumno-service.service';
 
@@ -22,7 +20,10 @@ export class ListaAlumnosComponent implements OnInit {
               public inscripcionesService: InscripcionService,
               public authService: AuthGuard,
               public router: Router) { 
-    this.alumnos = this.alumnosService.getAlumnosList();
+    
+    this.alumnosService.getAlumnosList().subscribe((alusP: Array<AlumnoDto>) => {
+      this.alumnos = alusP;
+    });
   }
 
   ngOnInit(): void {
@@ -31,7 +32,9 @@ export class ListaAlumnosComponent implements OnInit {
   eliminarAlumno(id: number) {
       this.alumnosService.deleteAlumno(id);
       this.inscripcionesService.eliminarInscirpcionPorAlumnoEliminado(id);  
-      this.alumnos = this.alumnosService.getAlumnosList();
+      this.alumnosService.getAlumnosList().subscribe((alusP: Array<AlumnoDto>) => {
+        this.alumnos = alusP;
+      });
   }
 
   actualizarAlumno(id: number) {
@@ -43,7 +46,7 @@ export class ListaAlumnosComponent implements OnInit {
   }
 
   isAuth(): boolean {
-      if(this.authService.getRole() == UserRoleEnum.ADMIN){
+      if(this.authService.getRole() == UserRoleEnum.ADMIN.toString()){
         return true;
       } else {
         return false;

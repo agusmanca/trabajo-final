@@ -8,22 +8,22 @@ import { UserRoleEnum } from './userRoleEnum';
 })
 export class AuthGuard implements CanActivate {
   
-  private role: UserRoleEnum = UserRoleEnum.UNREGISTERED;
-
-  constructor(public router: Router) { 
-  }
+  constructor(public router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot,
               state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-      switch(this.role) {
-          case UserRoleEnum.ADMIN:
+      let role = localStorage.getItem('role');  
+      
+      switch(role) {
+          case UserRoleEnum.ADMIN.toString():
               return true;
-          case UserRoleEnum.USER:
+          case UserRoleEnum.USER.toString():
               return false;
-          case UserRoleEnum.UNREGISTERED:
-              this.router.navigate(['login']);
+          case UserRoleEnum.UNREGISTERED.toString():
               return false;
+          default:
+              return false;    
       }          
   }
 
@@ -37,27 +37,30 @@ export class AuthGuard implements CanActivate {
     return false;
   }
 
-  getRole(): UserRoleEnum {
-    return this.role;
+  getRole(): string {
+    let role = localStorage.getItem('role');
+    return (role) ? role : '2';
   }
 
   login(usuario: string) {
+
       if(usuario.toLocaleLowerCase() == 'admin') {
-        this.role = UserRoleEnum.ADMIN;
+        localStorage.setItem('role', '0');
         localStorage.setItem('auth', 'true');
         this.router.navigate(['']);
         return; 
       }
 
       if(usuario.toLocaleLowerCase() == 'user') {
-        this.role = UserRoleEnum.USER;
+        localStorage.setItem('role', '1');
         localStorage.setItem('auth', 'true');
         this.router.navigate(['']);
         return;
       }
 
+      localStorage.setItem('role', '2');
       localStorage.setItem('auth', 'false');
-      this.role = UserRoleEnum.UNREGISTERED;
+      this.router.navigate(['login']);
   }
 
   logout() {
