@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthGuard } from '../commons/auth.guard';
+import { UsuarioDto } from '../usuarios/model/usuarioDto';
 
 @Component({
   selector: 'app-toobar',
@@ -7,7 +9,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ToobarComponent implements OnInit {
 
-  constructor() { }
+  usuario: UsuarioDto | undefined;
+
+  constructor(private auth: AuthGuard) { 
+      this.usuario = this.auth.getUser();
+  }
 
   ngOnInit(): void {
   }

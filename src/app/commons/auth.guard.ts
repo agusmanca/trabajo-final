@@ -37,29 +37,31 @@ export class AuthGuard implements CanActivate {
     }
 
     getRole(): string {
-      let role = localStorage.getItem('role');
+      const role = localStorage.getItem('role');
       return (role) ? role : '2';
     }
 
-    getUser(): UsuarioDto | undefined{
-      return this.usuario;
+    getUser(): UsuarioDto | undefined {
+      const user = localStorage.getItem('user');
+      if(!user){
+        this.logout();
+      }
+      return this.userService.getUsuarioByName(user!);
     }
 
     login(usuario: string) {
         this.usuario = this.userService.getUsuarioByName(usuario);
         
         if(this.usuario == undefined) {
-            localStorage.setItem('role', '2');
-            localStorage.setItem('auth', 'false');
+            this.logout();
             this.router.navigate(['login']);
             return;
         }
 
-
-
         if(this.usuario?.role == UserRoleEnum.ADMIN) {
             localStorage.setItem('role', '0');
             localStorage.setItem('auth', 'true');
+            localStorage.setItem('user', usuario);
             this.router.navigate(['']);
             return; 
         }
@@ -67,6 +69,7 @@ export class AuthGuard implements CanActivate {
         if(this.usuario?.role == UserRoleEnum.USER) {
             localStorage.setItem('role', '1');
             localStorage.setItem('auth', 'true');
+            localStorage.setItem('user', usuario);
             this.router.navigate(['']);
             return;
         }
@@ -75,5 +78,6 @@ export class AuthGuard implements CanActivate {
     logout() {
       localStorage.removeItem('role');
       localStorage.removeItem('auth');
+      localStorage.removeItem('user');
     }
 }
