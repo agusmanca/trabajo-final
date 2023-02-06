@@ -28,8 +28,8 @@ export class LoginComponent implements OnInit {
       let user: string = this.mainForm.get('user')?.value;
       let pass: string = this.mainForm.get('pass')?.value;
 
-      if(pass == user) {
-        this.auth.login(user);
+      if(pass && user) {
+        this.auth.login(user, pass);
       } else {
         console.log('Registro fallido');
       }

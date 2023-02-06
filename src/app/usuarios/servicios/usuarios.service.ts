@@ -1,5 +1,8 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
+import { environment } from 'src/environments/environment';
 import { UsuarioDto } from '../model/usuarioDto';
 
 @Injectable({
@@ -7,12 +10,23 @@ import { UsuarioDto } from '../model/usuarioDto';
 })
 export class UsuariosService {
 
+  private usuarios$!: Observable<UsuarioDto[]>;
+  private usuariosSubject: BehaviorSubject<UsuarioDto[]> = new BehaviorSubject<UsuarioDto[]>([]) ;
   usuarios: Array<UsuarioDto> = new Array();
 
-  constructor() {
-      this.getUsuariosMock();
+  private url:string = environment.mockApiUrl2 + 'usuarios';
+  private headers: HttpHeaders = new HttpHeaders({'Content-Type' : 'application/json'});
+
+  constructor(private httpService: HttpClient) {
+      this.usuarios$ = this.usuariosSubject.asObservable();
+
+      this.httpService.get<Array<UsuarioDto>>(this.url).subscribe((users: Array<UsuarioDto>) => {
+          this.usuariosSubject.next(users);
+          this.usuarios = this.usuariosSubject.getValue();
+      });
   }
 
+  /*
   getUsuariosMock() {
       this.usuarios = [
         {
@@ -48,10 +62,10 @@ export class UsuariosService {
           role: UserRoleEnum.USER
         },
       ]
-  }
+  } */
 
-  getUserList(): Array<UsuarioDto> {
-    return this.usuarios;
+  getUserList(): Observable<Array<UsuarioDto>> {
+    return this.usuarios$;
   }
 
   getUsuarioByName(username: string): UsuarioDto | undefined {
@@ -75,26 +89,57 @@ export class UsuariosService {
   }
 
   crearUsuario(user: UsuarioDto) {
-      
       let verifyUser = this.usuarios.filter(us => us.username == user.username);
 
       if(verifyUser.length > 0) {
+        console.log("El usuario ya existe");
         return
       }
 
-      this.usuarios.push(user);
+      this.httpService.post<UsuarioDto>(this.url, user, { headers: this.headers }).subscribe({
+        next: data => {
+          this.httpService.get<Array<UsuarioDto>>(this.url).subscribe((getUsers: Array<UsuarioDto>) => {
+              this.usuariosSubject.next(getUsers);
+              this.usuarios = this.usuariosSubject.getValue();
+          });
+        }, 
+        error: err => {
+          console.log(err);
+        }
+      });
   }
 
   updateUsuario(user: UsuarioDto) {
       let idx = this.usuarios.findIndex(us => us.id == user.id);
-
-      if(!idx || idx == 0){
-        return
-      }      
-      this.usuarios[idx] = user;
+      if(idx >= 0) {
+          this.httpService.put<UsuarioDto>(`${this.url}/${user.id}`, user).subscribe({
+              next: data => {
+                  this.httpService.get<Array<UsuarioDto>>(this.url).subscribe((getUsers: Array<UsuarioDto>) => {
+                    this.usuariosSubject.next(getUsers);
+                    this.usuarios = this.usuariosSubject.getValue();
+                  });
+              },
+              error: err => {
+                console.log(err);
+              }
+          });
+      }
   }
 
   deleteUsuario(id: number) {
-      this.usuarios = this.usuarios.filter(us => us.id !== id);
+      let usDel: UsuarioDto = this.usuarios.filter(us => us.id == id)[0]; 
+      if(usDel) {       
+          this.httpService.delete<UsuarioDto>(`${this.url}/${id}`, { headers: this.headers }).subscribe({
+              next: data => {
+                  this.httpService.get<Array<UsuarioDto>>(this.url).subscribe((getUsers: Array<UsuarioDto>) => {
+                    this.usuariosSubject.next(getUsers);
+                    this.usuarios = this.usuariosSubject.getValue();
+                  });
+              },
+              error: err => {
+                  console.log(err);
+              }
+          });
+      }
   }
 }

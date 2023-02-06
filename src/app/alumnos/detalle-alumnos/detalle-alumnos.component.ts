@@ -6,7 +6,6 @@ import { CursoDto } from 'src/app/cursos/model/CursoDto';
 import { CursoService } from 'src/app/cursos/service/curso.service';
 import { InscripcionDto } from 'src/app/inscripciones/model/InscripcionDto';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
-import { environment } from 'src/environments/environment';
 import { AlumnoDto } from '../model/alumnoDto';
 import { AlumnoServiceService } from '../service/alumno-service.service';
 
@@ -58,8 +57,9 @@ export class DetalleAlumnosComponent implements OnInit {
         return
       }
 
-      this.incripcionService.inscribirACurso(idCurso, idAlumno);
-      this.setInscripciones();
+      this.incripcionService.inscribirACurso(idCurso, idAlumno).then((res: boolean) => {
+          this.setInscripciones();
+      });
   }
 
   desinscribir(idCurso: number, idAlumno: number): void {
@@ -67,8 +67,9 @@ export class DetalleAlumnosComponent implements OnInit {
         return
       }
       
-      this.incripcionService.desinscribirACurso(idCurso, idAlumno);
-      this.setInscripciones();
+      this.incripcionService.desinscribirACurso(idCurso, idAlumno).then((res: boolean) => {
+          this.setInscripciones();
+      });
   }
 
   setInscripciones(): void {

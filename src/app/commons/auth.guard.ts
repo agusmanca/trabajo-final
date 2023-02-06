@@ -49,7 +49,7 @@ export class AuthGuard implements CanActivate {
       return this.userService.getUsuarioByName(user!);
     }
 
-    login(usuario: string) {
+    login(usuario: string, pass: string) {
         this.usuario = this.userService.getUsuarioByName(usuario);
         
         if(this.usuario == undefined) {
@@ -58,7 +58,7 @@ export class AuthGuard implements CanActivate {
             return;
         }
 
-        if(this.usuario?.role == UserRoleEnum.ADMIN) {
+        if(this.usuario?.role == UserRoleEnum.ADMIN && this.usuario.username == usuario && this.usuario.pass == pass) {
             localStorage.setItem('role', '0');
             localStorage.setItem('auth', 'true');
             localStorage.setItem('user', usuario);
@@ -66,7 +66,7 @@ export class AuthGuard implements CanActivate {
             return; 
         }
 
-        if(this.usuario?.role == UserRoleEnum.USER) {
+        if(this.usuario?.role == UserRoleEnum.USER && this.usuario.username == usuario && this.usuario.pass == pass) {
             localStorage.setItem('role', '1');
             localStorage.setItem('auth', 'true');
             localStorage.setItem('user', usuario);

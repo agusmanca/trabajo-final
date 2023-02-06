@@ -18,8 +18,10 @@ export class ListaUsuariosComponent implements OnInit {
   constructor(public usuarioService: UsuariosService,
               public authService: AuthGuard,
               public router: Router) { 
-    
-      this.usuarios = this.usuarioService.getUserList();            
+
+      this.usuarioService.getUserList().subscribe((usuarios: Array<UsuarioDto>) => {          
+          this.usuarios = usuarios;
+      });            
   }
 
   ngOnInit(): void {
@@ -34,8 +36,17 @@ export class ListaUsuariosComponent implements OnInit {
   }
 
   eliminarUsuario(id: number) {
-    this.usuarioService.deleteUsuario(id);
-    this.usuarios = this.usuarioService.getUserList(); 
+      let currentUser: UsuarioDto | undefined = this.authService.getUser();
+
+      if(!currentUser || currentUser.id == id){
+          console.log("No puede eliminar el usuario activo");
+          return
+      }
+      
+      this.usuarioService.deleteUsuario(id);
+      this.usuarioService.getUserList().subscribe((usuarios: Array<UsuarioDto>) => {
+        this.usuarios = usuarios;
+      }); 
   }
 
   isAuth(): boolean {

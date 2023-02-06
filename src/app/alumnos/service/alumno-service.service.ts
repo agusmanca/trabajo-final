@@ -138,7 +138,6 @@ export class AlumnoServiceService {
   }
 
   public saveNewAlumno(alumnoNuevo: AlumnoDto){
-      
       this.httpService.post<AlumnoDto>(this.url, alumnoNuevo, { headers: this.headers }).subscribe({
           next: data => {
               this.httpService.get<Array<AlumnoDto>>(this.url).subscribe((alumnos: Array<AlumnoDto>) => {

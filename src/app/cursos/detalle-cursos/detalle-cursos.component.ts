@@ -22,7 +22,7 @@ export class DetalleCursosComponent implements OnInit {
   cursoId!: number;
   curso: CursoDto | undefined;
   flagNewAlumno: boolean = false;
-  addBtnTxt: string = "Agregar nuevo Alumno";
+  addBtnTxt: string = "Inscribir nuevo Alumno";
   alumnoSelected: number = 0;
 
   constructor(public activeRouter: ActivatedRoute, 
@@ -43,14 +43,19 @@ export class DetalleCursosComponent implements OnInit {
       }
   }
 
-  inscribir(idCurso: number, idAlumno: number): void {
-      this.incripcionService.inscribirACurso(idCurso, idAlumno);
-      this.setInscripciones();
+  inscribirAlumno() {
+    if(this.curso && this.alumnoSelected > 0) {
+        this.incripcionService.inscribirACurso(this.curso.id, this.alumnoSelected).then(() => { 
+            this.setInscripciones();
+        });
+    }
+    this.flagNewAlumno = false;
   }
 
   desinscribir(idCurso: number, idAlumno: number): void {
-      this.incripcionService.desinscribirACurso(idCurso, idAlumno);
-      this.setInscripciones();
+      this.incripcionService.desinscribirACurso(idCurso, idAlumno).then((res: boolean) => {
+          this.setInscripciones();
+      });
   }
 
   setInscripciones(): void {
@@ -74,7 +79,6 @@ export class DetalleCursosComponent implements OnInit {
       }
   }
 
-
   getAlumnosNoInscriptos(): Observable<Array<AlumnoDto>> {
       return this.alumnoService.getAlumnosList().pipe(
           map((alusLst: Array<AlumnoDto>) => {
@@ -85,15 +89,6 @@ export class DetalleCursosComponent implements OnInit {
               return lista;
           }
       ));
-  }
-
-  inscribirAlumno() {
-
-    if(this.curso && this.alumnoSelected > 0) {
-        this.incripcionService.inscribirACurso(this.curso.id, this.alumnoSelected);
-        this.setInscripciones();
-    }
-    this.flagNewAlumno = false;
   }
 
   isAuth(): boolean {
