@@ -5,7 +5,6 @@ import { UserRoleEnum } from './userRoleEnum';
   name: 'role'
 })
 export class RolePipe implements PipeTransform {
-
   transform(value: UserRoleEnum): string {
       switch(value.toString()) {
           case "0":
@@ -16,5 +15,4 @@ export class RolePipe implements PipeTransform {
               return "" 
       }
   }
-
 }

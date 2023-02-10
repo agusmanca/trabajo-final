@@ -14,6 +14,11 @@ import { CursosModule } from './cursos/cursos.module';
 import { LoginComponent } from './login/login.component';
 import { CommonModule } from '@angular/common';
 import { UsuariosModule } from './usuarios/usuarios.module';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
+import { ROOT_REDUCER } from './state/app.state';
 
 @NgModule({
   declarations: [
@@ -32,7 +37,10 @@ import { UsuariosModule } from './usuarios/usuarios.module';
     SharedModule,
     AlumnosModule,
     CursosModule,
-    UsuariosModule
+    UsuariosModule,
+    StoreModule.forRoot(ROOT_REDUCER, {}),
+    EffectsModule.forRoot([]),
+    StoreDevtoolsModule.instrument({ name:'Test' })
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthGuard } from '../commons/auth.guard';
 
 @Component({
   selector: 'app-alumnos-wrapper',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CursosWrapperComponent implements OnInit {
 
-  constructor() { }
+  constructor(private readonly auth: AuthGuard) { 
+    auth.getRefresh();
+  }
 
   ngOnInit(): void {
   }

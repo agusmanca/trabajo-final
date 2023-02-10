@@ -12,7 +12,7 @@ export class UsuariosService {
 
   private usuarios$!: Observable<UsuarioDto[]>;
   private usuariosSubject: BehaviorSubject<UsuarioDto[]> = new BehaviorSubject<UsuarioDto[]>([]) ;
-  usuarios: Array<UsuarioDto> = new Array();
+  public  usuarios: Array<UsuarioDto> = new Array();
 
   private url:string = environment.mockApiUrl2 + 'usuarios';
   private headers: HttpHeaders = new HttpHeaders({'Content-Type' : 'application/json'});
@@ -63,6 +63,16 @@ export class UsuariosService {
         },
       ]
   } */
+
+  async refreshCall() {
+    return new Promise((resolve) => {
+        this.httpService.get<Array<UsuarioDto>>(this.url).subscribe((users: Array<UsuarioDto>) => {
+            this.usuariosSubject.next(users);
+            this.usuarios = this.usuariosSubject.getValue();
+            resolve('');
+        });
+    })
+  }
 
   getUserList(): Observable<Array<UsuarioDto>> {
     return this.usuarios$;

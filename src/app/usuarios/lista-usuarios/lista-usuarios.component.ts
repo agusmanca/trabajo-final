@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
+import { AppState } from 'src/app/state/app.state';
+import { userSelect } from 'src/app/state/login/login.selector';
+import { UserStateModel } from 'src/app/state/login/user.state.model';
 import { UsuarioDto } from '../model/usuarioDto';
 import { UsuariosService } from '../servicios/usuarios.service';
 
@@ -14,14 +18,19 @@ export class ListaUsuariosComponent implements OnInit {
 
   usuarios: Array<UsuarioDto> = new Array();
   columnsName: string[] = ['nombre', 'username', 'pass', 'role','actualizar', 'eliminar', 'detalle'];
-
+  userModel!: UserStateModel | null;
+  
   constructor(public usuarioService: UsuariosService,
-              public authService: AuthGuard,
+              public store: Store<AppState>,
               public router: Router) { 
+
+      this.store.select(userSelect).subscribe((user: UserStateModel | null) => {
+        this.userModel = user;
+      });
 
       this.usuarioService.getUserList().subscribe((usuarios: Array<UsuarioDto>) => {          
           this.usuarios = usuarios;
-      });            
+      });
   }
 
   ngOnInit(): void {
@@ -36,7 +45,7 @@ export class ListaUsuariosComponent implements OnInit {
   }
 
   eliminarUsuario(id: number) {
-      let currentUser: UsuarioDto | undefined = this.authService.getUser();
+      let currentUser: UsuarioDto | undefined = this.usuarioService.getUsuarioById(id);
 
       if(!currentUser || currentUser.id == id){
           console.log("No puede eliminar el usuario activo");
@@ -50,10 +59,6 @@ export class ListaUsuariosComponent implements OnInit {
   }
 
   isAuth(): boolean {
-      if(this.authService.getRole() == UserRoleEnum.ADMIN.toString()){
-        return true;
-      } else {
-        return false;
-      }
+      return (this.userModel?.role == UserRoleEnum.ADMIN);
   }
 }

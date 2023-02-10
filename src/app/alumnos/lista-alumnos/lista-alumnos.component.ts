@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
+import { AppState } from 'src/app/state/app.state';
+import { userSelect } from 'src/app/state/login/login.selector';
+import { UserStateModel } from 'src/app/state/login/user.state.model';
 import { AlumnoDto } from '../model/alumnoDto';
 import { AlumnoServiceService } from '../service/alumno-service.service';
 
@@ -15,19 +19,23 @@ export class ListaAlumnosComponent implements OnInit {
 
   alumnos: Array<AlumnoDto> = new Array();
   columnsName: string[] = ['nombre', 'edad', 'division', 'actualizar', 'eliminar', 'detalle'];
+  userModel!: UserStateModel | null;
 
   constructor(public alumnosService: AlumnoServiceService,
               public inscripcionesService: InscripcionService,
-              public authService: AuthGuard,
+              public store: Store<AppState>,
               public router: Router) { 
     
+    this.store.select(userSelect).subscribe((user: UserStateModel | null) => {
+      this.userModel = user;
+    });
+
     this.alumnosService.getAlumnosList().subscribe((alusP: Array<AlumnoDto>) => {
       this.alumnos = alusP;
     });
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   eliminarAlumno(id: number) {
       this.alumnosService.deleteAlumno(id);
@@ -46,10 +54,6 @@ export class ListaAlumnosComponent implements OnInit {
   }
 
   isAuth(): boolean {
-      if(this.authService.getRole() == UserRoleEnum.ADMIN.toString()){
-        return true;
-      } else {
-        return false;
-      }
+      return (this.userModel?.role == UserRoleEnum.ADMIN);
   }
 }

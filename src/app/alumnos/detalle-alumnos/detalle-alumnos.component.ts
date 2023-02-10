@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { CursoDto } from 'src/app/cursos/model/CursoDto';
 import { CursoService } from 'src/app/cursos/service/curso.service';
 import { InscripcionDto } from 'src/app/inscripciones/model/InscripcionDto';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
+import { AppState } from 'src/app/state/app.state';
+import { userSelect } from 'src/app/state/login/login.selector';
+import { UserStateModel } from 'src/app/state/login/user.state.model';
 import { AlumnoDto } from '../model/alumnoDto';
 import { AlumnoServiceService } from '../service/alumno-service.service';
 
@@ -20,17 +24,22 @@ export class DetalleAlumnosComponent implements OnInit {
   inscripciones: Array<InscripcionDto> = new Array();
   alumnoId!: number;
   alumno!: AlumnoDto;
+  userModel!: UserStateModel | null;
 
   constructor(public activeRouter: ActivatedRoute, 
               public incripcionService: InscripcionService,
               public cursosService: CursoService,
-              public authService: AuthGuard,
+              public store: Store<AppState>,
               public alumnoService: AlumnoServiceService) {
     
     this.activeRouter.params.subscribe((param) => {
         this.alumnoId = param['id'];
         this.alumno = this.alumnoService.getAlumnoById(this.alumnoId);
     }); 
+
+    this.store.select(userSelect).subscribe((user: UserStateModel | null) => {
+      this.userModel = user;
+    });
   }
 
   ngOnInit(): void {
@@ -53,7 +62,7 @@ export class DetalleAlumnosComponent implements OnInit {
   }
 
   inscribir(idCurso: number, idAlumno: number): void {
-      if(this.authService.getRole() != UserRoleEnum.ADMIN.toString()){
+      if(this.userModel?.role != UserRoleEnum.ADMIN){
         return
       }
 
@@ -63,7 +72,7 @@ export class DetalleAlumnosComponent implements OnInit {
   }
 
   desinscribir(idCurso: number, idAlumno: number): void {
-      if(this.authService.getRole() != UserRoleEnum.ADMIN.toString()){
+      if(this.userModel?.role != UserRoleEnum.ADMIN){
         return
       }
       

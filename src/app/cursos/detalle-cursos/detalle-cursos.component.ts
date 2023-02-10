@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { map, Observable, of } from 'rxjs';
 import { AlumnoDto } from 'src/app/alumnos/model/alumnoDto';
 import { AlumnoServiceService } from 'src/app/alumnos/service/alumno-service.service';
@@ -7,6 +8,9 @@ import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { InscripcionDto } from 'src/app/inscripciones/model/InscripcionDto';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
+import { AppState } from 'src/app/state/app.state';
+import { userSelect } from 'src/app/state/login/login.selector';
+import { UserStateModel } from 'src/app/state/login/user.state.model';
 import { CursoDto } from '../model/CursoDto';
 import { CursoService } from '../service/curso.service';
 
@@ -24,17 +28,22 @@ export class DetalleCursosComponent implements OnInit {
   flagNewAlumno: boolean = false;
   addBtnTxt: string = "Inscribir nuevo Alumno";
   alumnoSelected: number = 0;
-
+  userModel!: UserStateModel | null;
+  
   constructor(public activeRouter: ActivatedRoute, 
               public incripcionService: InscripcionService,
               public cursosService: CursoService,
-              public authService: AuthGuard,
+              public store: Store<AppState>,
               public alumnoService: AlumnoServiceService) {
     
     this.activeRouter.params.subscribe((param) => {
         this.cursoId = param['id'];
         this.curso = this.cursosService.getCursoById(this.cursoId);
     });
+
+    this.store.select(userSelect).subscribe((user: UserStateModel | null) => {
+      this.userModel = user;
+    }); 
   }
 
   ngOnInit(): void {
@@ -92,11 +101,7 @@ export class DetalleCursosComponent implements OnInit {
   }
 
   isAuth(): boolean {
-    if(this.authService.getRole() == UserRoleEnum.ADMIN.toString()){
-      return true;
-    } else {
-      return false;
-    }
+    return (this.userModel?.role == UserRoleEnum.ADMIN);
   }
 }
 

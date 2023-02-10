@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
+import { AppState } from 'src/app/state/app.state';
+import { userSelect } from 'src/app/state/login/login.selector';
+import { UserStateModel } from 'src/app/state/login/user.state.model';
 import { environment } from 'src/environments/environment';
 import { CursoDto } from '../model/CursoDto';
 import { CursoService } from '../service/curso.service';
@@ -18,12 +22,16 @@ export class ListaCursosComponent implements OnInit {
   cursos$!: Observable<Array<CursoDto>>;
   cursos: Array<CursoDto> = new Array();
   columnsName: string[] = ['descripcion', 'duracionHs', 'fechaInicio', 'modalidad', 'titular', 'actualizar', 'eliminar', 'detalle'];
-
+  userModel!: UserStateModel | null;
+  
   constructor(public cursosService: CursoService, 
               public inscripcionService: InscripcionService,
-              public authService: AuthGuard,
+              public store: Store<AppState>,
               public router: Router) {
 
+    this.store.select(userSelect).subscribe((user: UserStateModel | null) => {
+      this.userModel = user;
+    });        
 
     this.cursos$ = this.cursosService.getCursosList();
 
@@ -52,10 +60,6 @@ export class ListaCursosComponent implements OnInit {
   }
 
   isAuth(): boolean {
-    if(this.authService.getRole() == UserRoleEnum.ADMIN.toString()){
-      return true;
-    } else {
-      return false;
-    }
+    return (this.userModel?.role == UserRoleEnum.ADMIN);
   }
 }

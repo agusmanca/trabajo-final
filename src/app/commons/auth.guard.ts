@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { AppState } from '../state/app.state';
+import { executeLogoutAc, setUserLogedAc } from '../state/login/login.action';
+import { UserStateModel } from '../state/login/user.state.model';
 import { UsuarioDto } from '../usuarios/model/usuarioDto';
 import { UsuariosService } from '../usuarios/servicios/usuarios.service';
 import { UserRoleEnum } from './userRoleEnum';
@@ -11,73 +15,96 @@ import { UserRoleEnum } from './userRoleEnum';
 export class AuthGuard implements CanActivate {
 
     usuario: UsuarioDto | undefined;
+    userState$: Observable<UserStateModel | null> = new Observable();
+    userStateSubject: BehaviorSubject<UserStateModel> = new BehaviorSubject<UserStateModel>({ id: 0, username: '', nombre: '', role: UserRoleEnum.UNREGISTERED});
   
-    constructor(public router: Router, private userService: UsuariosService) { }
+    constructor(public router: Router, private userService: UsuariosService, private store: Store<AppState>) {
+        this.userState$ = this.userStateSubject.asObservable();
+    }
 
     canActivate(route: ActivatedRouteSnapshot,
                 state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-        
-        const role = localStorage.getItem('role');  
-        let rta: boolean = false;
-                  
-        if(role && role == UserRoleEnum.ADMIN.toString()) {
-            rta = true;
-        }        
-        return rta;
+              
+        return (this.usuario?.role != null && this.usuario?.role == UserRoleEnum.ADMIN);
     }
 
     isAuth(): boolean {
       let auth = localStorage.getItem('auth');
-
-      if(auth && auth == 'true'){
-        return true;
-      }
-
-      return false;
+      return (auth != null && auth == 'true');
     }
 
-    getRole(): string {
-      const role = localStorage.getItem('role');
-      return (role) ? role : '2';
-    }
+    getUser(): Observable<UserStateModel | null>  {
+        let user: string | null = localStorage.getItem('user');
+        if(user == null) {
+            user = '';
+        }
 
-    getUser(): UsuarioDto | undefined {
-      const user = localStorage.getItem('user');
-      if(!user){
-        this.logout();
-      }
-      return this.userService.getUsuarioByName(user!);
+        this.usuario = this.userService.getUsuarioByName(user);
+
+        if(this.usuario) {
+            const userState: UserStateModel = {
+                id: this.usuario.id,
+                username: this.usuario.username,
+                nombre: this.usuario.nombre + ' ' + this.usuario.apellido,
+                role: this.usuario.role
+            }
+            
+            this.userStateSubject.next(userState);
+        }
+        return this.userState$;
     }
 
     login(usuario: string, pass: string) {
         this.usuario = this.userService.getUsuarioByName(usuario);
-        
-        if(this.usuario == undefined) {
-            this.logout();
-            this.router.navigate(['login']);
-            return;
-        }
 
-        if(this.usuario?.role == UserRoleEnum.ADMIN && this.usuario.username == usuario && this.usuario.pass == pass) {
-            localStorage.setItem('role', '0');
+        if(this.usuario && this.usuario.username == usuario && this.usuario.pass == pass) {
+            const userState: UserStateModel = {
+              id: this.usuario.id,
+              username: this.usuario.username,
+              nombre: this.usuario.nombre + ' ' + this.usuario.apellido,
+              role: this.usuario.role
+            }
+
+            this.userStateSubject.next(userState);
+            this.store.dispatch(setUserLogedAc(userState));
             localStorage.setItem('auth', 'true');
             localStorage.setItem('user', usuario);
             this.router.navigate(['']);
             return; 
-        }
 
-        if(this.usuario?.role == UserRoleEnum.USER && this.usuario.username == usuario && this.usuario.pass == pass) {
-            localStorage.setItem('role', '1');
-            localStorage.setItem('auth', 'true');
-            localStorage.setItem('user', usuario);
-            this.router.navigate(['']);
+        } else {
+
+            this.logout();
+            this.router.navigate(['login']);
             return;
         }
     }
 
     logout() {
-      localStorage.removeItem('role');
-      localStorage.removeItem('auth');
-      localStorage.removeItem('user');
+        this.store.dispatch(executeLogoutAc());
+
+        localStorage.removeItem('auth');
+        localStorage.removeItem('user');
+    }
+
+    getRefresh(): void {
+        let user: string | null = localStorage.getItem('user');
+        this.userService.refreshCall().then(() => {
+            if(user != null) {
+                this.usuario = this.userService.getUsuarioByName(user);
+
+                if(this.usuario) {
+                    const userState: UserStateModel = {
+                        id: this.usuario.id,
+                        username: this.usuario.username,
+                        nombre: this.usuario.nombre + ' ' + this.usuario.apellido,
+                        role: this.usuario.role
+                    }
+                   
+                    this.userStateSubject.next(userState);
+                    this.store.dispatch(setUserLogedAc(userState));
+                }
+            }
+        }); 
     }
 }
