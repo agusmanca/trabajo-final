@@ -1,10 +1,10 @@
 <div class="main-grid">
 
-  <div *ngIf="!authServ.isAuth()" class="loging-container-style">
+  <div *ngIf="!(isAuth() | async)" class="loging-container-style">
       <app-login></app-login>
   </div>
 
-  <div *ngIf="authServ.isAuth()">
+  <div *ngIf="isAuth() | async">
       <div class="toolbar">
         <app-toobar></app-toobar>
       </div>

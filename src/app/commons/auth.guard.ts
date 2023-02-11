@@ -74,18 +74,15 @@ export class AuthGuard implements CanActivate {
 
         } else {
 
-            this.logout();
+            this.store.dispatch(executeLogoutAc());
+
+            localStorage.removeItem('auth');
+            localStorage.removeItem('user');
+
             this.router.navigate(['login']);
             return;
         }
-    }
-
-    logout() {
-        this.store.dispatch(executeLogoutAc());
-
-        localStorage.removeItem('auth');
-        localStorage.removeItem('user');
-    }
+    }  
 
     getRefresh(): Observable<UserStateModel | undefined> {
         let user: string | null = localStorage.getItem('user');

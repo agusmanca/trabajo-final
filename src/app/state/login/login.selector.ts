@@ -18,3 +18,8 @@ export const userSelect = createSelector(
     selectItemFeature,
     (login: LoginStateModel) => login.user
 );
+
+export const userLoginState = createSelector(
+    selectItemFeature,
+    (login: LoginStateModel) => login.isLoged
+);

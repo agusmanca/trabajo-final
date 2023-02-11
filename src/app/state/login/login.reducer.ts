@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store";
 import { UserRoleEnum } from "src/app/commons/userRoleEnum";
-import { executeLogoutAc, initLoginAc, initLoginComponentAc, refreshRegisterUser, returnRegisterUser, setUserLogedAc } from "./login.action";
+import { executeLogoutAc, initLoginAc, initLoginComponentAc, refreshRegisterUser, returnRegisterUser, setUserLogedAc, verifySessionState } from "./login.action";
 import { LoginStateModel } from "./login.state.model";
 import { produce } from 'immer';
 
@@ -15,6 +15,7 @@ export const loginReducer = createReducer (
         })
         return newState
     }),
+    
     on(initLoginAc, (currentState) => {
         const newState = produce(currentState, (copy) => {
             copy.isLoged = false;
@@ -30,10 +31,18 @@ export const loginReducer = createReducer (
     })),
 
     on(executeLogoutAc, (currentState) => {
+        localStorage.removeItem('auth');
+        localStorage.removeItem('user');
         return { ...currentState, initialState }
     }),
 
     on(refreshRegisterUser, (currentState) => {
         return { ...currentState }
+    }),
+
+    on(verifySessionState, (currentState) => {
+        let auth = localStorage.getItem('auth');
+        const value = (auth != null && auth == 'true');
+        return { ...currentState, isLoged: value }
     })
 );

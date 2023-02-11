@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AuthGuard } from '../commons/auth.guard';
 import { UserRoleEnum } from '../commons/userRoleEnum';
 import { AppState } from '../state/app.state';
-import { userSelect } from '../state/login/login.selector';
+import { executeLogoutAc } from '../state/login/login.action';
+import { userLoginState, userSelect } from '../state/login/login.selector';
 import { UserStateModel } from '../state/login/user.state.model';
 
 @Component({
@@ -15,7 +17,7 @@ export class SidebarComponent implements OnInit {
 
   userModel!: UserStateModel | null;
 
-  constructor(private auth: AuthGuard, public store: Store<AppState>) { 
+  constructor(public store: Store<AppState>) { 
       this.store.select(userSelect).subscribe((user: UserStateModel | null) => {
         this.userModel = user;
       });
@@ -29,6 +31,6 @@ export class SidebarComponent implements OnInit {
   }
 
   logout(): void {
-    this.auth.logout()
+    this.store.dispatch(executeLogoutAc());
   }
 }

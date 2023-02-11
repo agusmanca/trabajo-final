@@ -25,3 +25,7 @@ export const refreshRegisterUser = createAction (
 export const returnRegisterUser = createAction (
     '[Login] Usuario registrado recargado'
 );
+
+export const verifySessionState = createAction (
+    '[Login] Verificar estado session'
+);

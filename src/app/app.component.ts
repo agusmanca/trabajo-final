@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
-import { AuthGuard } from './commons/auth.guard';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppState } from './state/app.state';
+import { refreshRegisterUser, verifySessionState } from './state/login/login.action';
+import { userLoginState } from './state/login/login.selector';
 
 @Component({
   selector: 'app-root',
@@ -8,9 +12,14 @@ import { AuthGuard } from './commons/auth.guard';
 })
 export class AppComponent {
  
-  constructor(public authServ: AuthGuard) {
-    
+  title = 'final-manca';
+
+  constructor(private readonly store: Store<AppState>) { 
+      this.store.dispatch(refreshRegisterUser());
+      this.store.dispatch(verifySessionState());
   }
 
-  title = 'final-manca';
+  isAuth(): Observable<boolean> {
+    return this.store.select(userLoginState);
+  }
 }
