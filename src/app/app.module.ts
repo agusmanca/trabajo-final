@@ -16,9 +16,9 @@ import { CommonModule } from '@angular/common';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { ROOT_REDUCER } from './state/app.state';
+import { LoginEffects } from './state/login/login.effect';
 
 @NgModule({
   declarations: [
@@ -39,7 +39,7 @@ import { ROOT_REDUCER } from './state/app.state';
     CursosModule,
     UsuariosModule,
     StoreModule.forRoot(ROOT_REDUCER, {}),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([LoginEffects]),
     StoreDevtoolsModule.instrument({ name:'Test' })
   ],
   providers: [],

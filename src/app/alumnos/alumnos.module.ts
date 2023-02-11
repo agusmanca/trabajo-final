@@ -16,7 +16,7 @@ const routes: Routes = [
       { path: '', component: ListaAlumnosComponent },
       { path: 'lista-alumnos', component: ListaAlumnosComponent },
       { path: 'abm-alumno/:id', component: AbmAlumnosComponent, canActivate:[AuthGuard] },
-      { path: 'detalle-alumno/:id', component: DetalleAlumnosComponent }
+      { path: 'detalle-alumno/:id', component: DetalleAlumnosComponent, canActivate:[AuthGuard] }
     ]
   },
   { path: '', pathMatch:'full', redirectTo: '' }

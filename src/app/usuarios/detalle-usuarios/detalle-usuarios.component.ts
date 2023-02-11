@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UsuarioDto } from '../model/usuarioDto';
 import { UsuariosService } from '../servicios/usuarios.service';
 
@@ -15,7 +14,6 @@ export class DetalleUsuariosComponent implements OnInit {
   usuario!: UsuarioDto | undefined;
 
   constructor(public activeRouter: ActivatedRoute,
-              public authService: AuthGuard,
               public usuarioService: UsuariosService) {
     
     this.activeRouter.params.subscribe((param) => {

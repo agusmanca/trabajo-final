@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthGuard } from '../commons/auth.guard';
+import { Store } from '@ngrx/store';
+import { AppState } from '../state/app.state';
+import { refreshRegisterUser } from '../state/login/login.action';
 
 @Component({
   selector: 'app-usuarios',
@@ -7,8 +9,8 @@ import { AuthGuard } from '../commons/auth.guard';
 })
 export class UsuariosComponent implements OnInit {
 
-  constructor(private auth: AuthGuard) { 
-    auth.getRefresh();
+  constructor(private readonly store: Store<AppState>) { 
+      this.store.dispatch(refreshRegisterUser());
   }
 
   ngOnInit(): void {

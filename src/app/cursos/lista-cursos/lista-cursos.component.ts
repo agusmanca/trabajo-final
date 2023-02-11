@@ -2,13 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';
 import { AppState } from 'src/app/state/app.state';
 import { userSelect } from 'src/app/state/login/login.selector';
 import { UserStateModel } from 'src/app/state/login/user.state.model';
-import { environment } from 'src/environments/environment';
 import { CursoDto } from '../model/CursoDto';
 import { CursoService } from '../service/curso.service';
 

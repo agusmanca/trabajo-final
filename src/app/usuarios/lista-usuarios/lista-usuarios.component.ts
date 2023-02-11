@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { AppState } from 'src/app/state/app.state';
 import { userSelect } from 'src/app/state/login/login.selector';

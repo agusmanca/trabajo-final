@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UsuarioDto } from '../model/usuarioDto';
 
@@ -64,15 +63,15 @@ export class UsuariosService {
       ]
   } */
 
-  async refreshCall() {
+  async refreshCall(): Promise<UsuarioDto[]> {
     return new Promise((resolve) => {
         this.httpService.get<Array<UsuarioDto>>(this.url).subscribe((users: Array<UsuarioDto>) => {
             this.usuariosSubject.next(users);
             this.usuarios = this.usuariosSubject.getValue();
-            resolve('');
+            resolve(this.usuarios);
         });
     })
-  }
+  } 
 
   getUserList(): Observable<Array<UsuarioDto>> {
     return this.usuarios$;

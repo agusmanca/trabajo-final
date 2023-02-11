@@ -4,7 +4,6 @@ import { Store } from '@ngrx/store';
 import { AuthGuard } from '../commons/auth.guard';
 import { AppState } from '../state/app.state';
 import { initLoginAc, initLoginComponentAc } from '../state/login/login.action';
-import { UsuariosService } from '../usuarios/servicios/usuarios.service';
 
 @Component({
   selector: 'app-login',
@@ -37,7 +36,7 @@ export class LoginComponent implements OnInit {
       let pass: string = this.mainForm.get('pass')?.value;
 
       if(pass && user) {
-        this.auth.login(user, pass);
+        this.auth.login(user.toLowerCase(), pass.toLowerCase());
       } else {
         console.log('Registro fallido');
       }

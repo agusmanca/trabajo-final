@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import { AppState } from '../state/app.state';
 import { executeLogoutAc, setUserLogedAc } from '../state/login/login.action';
 import { UserStateModel } from '../state/login/user.state.model';
@@ -57,7 +57,7 @@ export class AuthGuard implements CanActivate {
     login(usuario: string, pass: string) {
         this.usuario = this.userService.getUsuarioByName(usuario);
 
-        if(this.usuario && this.usuario.username == usuario && this.usuario.pass == pass) {
+        if(this.usuario && this.usuario.username.toLowerCase() == usuario && this.usuario.pass.toLowerCase() == pass) {
             const userState: UserStateModel = {
               id: this.usuario.id,
               username: this.usuario.username,
@@ -87,11 +87,12 @@ export class AuthGuard implements CanActivate {
         localStorage.removeItem('user');
     }
 
-    getRefresh(): void {
+    getRefresh(): Observable<UserStateModel | undefined> {
         let user: string | null = localStorage.getItem('user');
-        this.userService.refreshCall().then(() => {
-            if(user != null) {
-                this.usuario = this.userService.getUsuarioByName(user);
+
+        return from(this.userService.refreshCall().then((users: UsuarioDto[] | null) => {
+            if(user != null && users != null && users.length > 0) {
+                this.usuario = users.filter(us => us.username == user)[0];
 
                 if(this.usuario) {
                     const userState: UserStateModel = {
@@ -103,8 +104,12 @@ export class AuthGuard implements CanActivate {
                    
                     this.userStateSubject.next(userState);
                     this.store.dispatch(setUserLogedAc(userState));
+
+                    return userState;
+                } else {
+                    return undefined;
                 }
             }
-        }); 
-    }
+        }));
+    } 
 }

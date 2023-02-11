@@ -4,7 +4,6 @@ import { Store } from '@ngrx/store';
 import { map, Observable, of } from 'rxjs';
 import { AlumnoDto } from 'src/app/alumnos/model/alumnoDto';
 import { AlumnoServiceService } from 'src/app/alumnos/service/alumno-service.service';
-import { AuthGuard } from 'src/app/commons/auth.guard';
 import { UserRoleEnum } from 'src/app/commons/userRoleEnum';
 import { InscripcionDto } from 'src/app/inscripciones/model/InscripcionDto';
 import { InscripcionService } from 'src/app/inscripciones/services/inscripcion.service';

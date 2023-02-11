@@ -17,3 +17,11 @@ export const setUserLogedAc = createAction (
 export const executeLogoutAc = createAction (
     '[Login] Finalizar Sesion'
 );
+
+export const refreshRegisterUser = createAction (
+    '[Login] Recargar usuario registrado'
+);
+
+export const returnRegisterUser = createAction (
+    '[Login] Usuario registrado recargado'
+);

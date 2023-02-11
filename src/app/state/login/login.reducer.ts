@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store";
 import { UserRoleEnum } from "src/app/commons/userRoleEnum";
-import { executeLogoutAc, initLoginAc, initLoginComponentAc, setUserLogedAc } from "./login.action";
+import { executeLogoutAc, initLoginAc, initLoginComponentAc, refreshRegisterUser, returnRegisterUser, setUserLogedAc } from "./login.action";
 import { LoginStateModel } from "./login.state.model";
 import { produce } from 'immer';
 
@@ -32,4 +32,8 @@ export const loginReducer = createReducer (
     on(executeLogoutAc, (currentState) => {
         return { ...currentState, initialState }
     }),
+
+    on(refreshRegisterUser, (currentState) => {
+        return { ...currentState }
+    })
 );

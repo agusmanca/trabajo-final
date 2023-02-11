@@ -15,10 +15,10 @@ const routes: Routes = [
     component: UsuariosComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', component: ListaUsuariosComponent },
-      { path: 'lista-usuarios', component: ListaUsuariosComponent },
-      { path: 'abm-usuarios/:id', component: AbmUsuariosComponent },
-      { path: 'detalle-usuarios/:id', component: DetalleUsuariosComponent },
+      { path: '', component: ListaUsuariosComponent, canActivate:[AuthGuard] },
+      { path: 'lista-usuarios', component: ListaUsuariosComponent, canActivate:[AuthGuard] },
+      { path: 'abm-usuarios/:id', component: AbmUsuariosComponent, canActivate:[AuthGuard] },
+      { path: 'detalle-usuarios/:id', component: DetalleUsuariosComponent, canActivate:[AuthGuard] },
     ]
   },
   { path: '', pathMatch:'full', redirectTo: '' }
